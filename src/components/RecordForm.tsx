@@ -138,7 +138,7 @@ export default function RecordForm({ onAdd, onCancel, prefillDrug }: Props) {
         <label>購入店舗</label>
         <input
           type="text"
-          placeholder="例: ウエルシア ○○店"
+          placeholder="例: ドラッグストア○○店"
           value={store}
           onChange={(e) => setStore(e.target.value)}
         />
