@@ -3,9 +3,10 @@ import type { PurchaseRecord } from '../types';
 interface Props {
   records: PurchaseRecord[];
   onDelete: (id: string) => void;
+  onEdit: (record: PurchaseRecord) => void;
 }
 
-export default function RecordList({ records, onDelete }: Props) {
+export default function RecordList({ records, onDelete, onEdit }: Props) {
   const sorted = [...records].sort((a, b) => b.date.localeCompare(a.date));
   const fmt = (n: number) => n.toLocaleString('ja-JP');
 
@@ -45,7 +46,8 @@ export default function RecordList({ records, onDelete }: Props) {
               <td className="col-amount">¥{fmt(r.amount)}</td>
               <td className="col-store">{r.store || '—'}</td>
               <td className="col-note">{r.note || '—'}</td>
-              <td>
+              <td className="col-actions">
+                <button className="btn-edit" onClick={() => onEdit(r)}>編集</button>
                 <button
                   className="btn-delete"
                   onClick={() => {

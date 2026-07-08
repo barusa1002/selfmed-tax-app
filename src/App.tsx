@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { PurchaseRecord } from './types';
-import { loadRecords, addRecord, deleteRecord } from './utils/storage';
+import { loadRecords, addRecord, updateRecord, deleteRecord } from './utils/storage';
 import { calcTaxSummary, filterByYear } from './utils/tax';
 import { exportToCsv } from './utils/exportCsv';
 import Dashboard from './components/Dashboard';
@@ -19,6 +19,7 @@ export default function App() {
   const [showForm, setShowForm] = useState(false);
   const [tab, setTab] = useState<Tab>('records');
   const [prefillDrug, setPrefillDrug] = useState<DrugEntry | null>(null);
+  const [editingRecord, setEditingRecord] = useState<PurchaseRecord | null>(null);
 
   const yearRecords = filterByYear(records, year);
   const summary = calcTaxSummary(yearRecords);
@@ -27,6 +28,18 @@ export default function App() {
     setRecords((prev) => addRecord(prev, record));
     setShowForm(false);
     setPrefillDrug(null);
+  };
+
+  const handleUpdate = (record: PurchaseRecord) => {
+    setRecords((prev) => updateRecord(prev, record));
+    setShowForm(false);
+    setEditingRecord(null);
+  };
+
+  const handleEdit = (record: PurchaseRecord) => {
+    setEditingRecord(record);
+    setPrefillDrug(null);
+    setShowForm(true);
   };
 
   const handleDelete = (id: string) => {
@@ -90,12 +103,15 @@ export default function App() {
             <Dashboard summary={summary} year={year} onYearChange={setYear} />
 
             {showForm && (
-              <div className="modal-overlay" onClick={() => { setShowForm(false); setPrefillDrug(null); }}>
+              <div className="modal-overlay" onClick={() => { setShowForm(false); setPrefillDrug(null); setEditingRecord(null); }}>
                 <div className="modal" onClick={(e) => e.stopPropagation()}>
                   <RecordForm
+                    key={editingRecord?.id ?? prefillDrug?.jan ?? 'manual'}
                     onAdd={handleAdd}
-                    onCancel={() => { setShowForm(false); setPrefillDrug(null); }}
-                    prefillDrug={prefillDrug}
+                    onCancel={() => { setShowForm(false); setPrefillDrug(null); setEditingRecord(null); }}
+                    prefillDrug={editingRecord ? null : prefillDrug}
+                    editRecord={editingRecord}
+                    onUpdate={handleUpdate}
                   />
                 </div>
               </div>
@@ -103,7 +119,7 @@ export default function App() {
 
             <section className="records-section">
               <h2>{year}年の購入記録 ({yearRecords.length}件)</h2>
-              <RecordList records={yearRecords} onDelete={handleDelete} />
+              <RecordList records={yearRecords} onDelete={handleDelete} onEdit={handleEdit} />
             </section>
           </>
         )}

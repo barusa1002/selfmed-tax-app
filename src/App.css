@@ -83,6 +83,17 @@ body {
 .btn-export:hover:not(:disabled) { background: #f0faf4; color: #145730; }
 .btn-export:disabled { opacity: 0.45; cursor: not-allowed; }
 
+.col-actions { display: flex; gap: 4px; align-items: center; }
+.btn-edit {
+  background: none;
+  border: none;
+  color: #2b6cb0;
+  font-size: 0.8rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+.btn-edit:hover { background: #ebf8ff; }
 .btn-delete {
   background: none;
   border: none;

@@ -23,6 +23,12 @@ export function addRecord(records: PurchaseRecord[], record: PurchaseRecord): Pu
   return next;
 }
 
+export function updateRecord(records: PurchaseRecord[], record: PurchaseRecord): PurchaseRecord[] {
+  const next = records.map((r) => (r.id === record.id ? record : r));
+  saveRecords(next);
+  return next;
+}
+
 export function deleteRecord(records: PurchaseRecord[], id: string): PurchaseRecord[] {
   const next = records.filter((r) => r.id !== id);
   saveRecords(next);
