@@ -132,8 +132,8 @@ export default function DrugSearch({ onAddToRecord }: Props) {
 
       <div className="drug-results">
         {results.map((drug) => (
-          <div key={drug.jan} className={`drug-card ${drug.eligible ? 'drug-card-eligible' : ''}`}>
-            <div className="drug-card-header" onClick={() => setExpanded(expanded === drug.jan ? null : drug.jan)}>
+          <div key={drug.jan ?? drug.name} className={`drug-card ${drug.eligible ? 'drug-card-eligible' : ''}`}>
+            <div className="drug-card-header" onClick={() => setExpanded(expanded === drug.jan ? null : drug.jan ?? null)}>
               <div className="drug-card-title">
                 <span className={`badge-small ${drug.eligible ? 'eligible' : 'not-eligible'}`}>
                   {drug.eligible ? '税制対象' : '対象外'}

@@ -102,7 +102,7 @@ export default function RecordForm({ onAdd, onCancel, prefillDrug, editRecord, o
             {suggestions.length > 0 && (
               <ul className="suggestion-list">
                 {suggestions.map((d) => (
-                  <li key={d.jan} onClick={() => applySuggestion(d)}>
+                  <li key={d.jan ?? d.name} onClick={() => applySuggestion(d)}>
                     <span className="sug-name">{d.name}</span>
                     <span className="sug-detail">{d.maker}</span>
                     <span className={`sug-badge ${d.eligible ? 'eligible' : 'not-eligible'}`}>

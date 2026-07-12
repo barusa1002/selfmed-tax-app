@@ -16,10 +16,9 @@ export default function BarcodeScanner({ onDetected, onClose }: Props) {
   const [scannedJan, setScannedJan] = useState('');
   const [error, setError] = useState('');
 
-  useEffect(() => {
+  const startScan = () => {
     const reader = new BrowserMultiFormatReader();
     readerRef.current = reader;
-
     reader
       .decodeFromVideoDevice(null, videoRef.current!, (result, err) => {
         if (result) {
@@ -40,10 +39,16 @@ export default function BarcodeScanner({ onDetected, onClose }: Props) {
       .catch(() => {
         setError('カメラへのアクセスに失敗しました。設定でカメラの使用を許可してください。');
       });
+  };
 
+  useEffect(() => {
+    startScan();
     return () => {
-      reader.reset();
+      // 再スキャンでリーダーが差し替わっている可能性があるため、
+      // 必ず最新のインスタンスを解放する（カメラの消し忘れ防止）
+      readerRef.current?.reset();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleConfirm = () => {
@@ -54,26 +59,8 @@ export default function BarcodeScanner({ onDetected, onClose }: Props) {
     setStatus('scanning');
     setFoundDrug(null);
     setScannedJan('');
-    const reader = new BrowserMultiFormatReader();
-    readerRef.current = reader;
-    reader
-      .decodeFromVideoDevice(null, videoRef.current!, (result, err) => {
-        if (result) {
-          const jan = result.getText();
-          const drug = lookupByJan(jan);
-          setScannedJan(jan);
-          if (drug) {
-            setFoundDrug(drug);
-            setStatus('found');
-          } else {
-            setStatus('notfound');
-          }
-          reader.reset();
-        } else if (err && !(err instanceof NotFoundException)) {
-          setError('カメラへのアクセスに失敗しました。');
-        }
-      })
-      .catch(() => setError('カメラへのアクセスに失敗しました。'));
+    readerRef.current?.reset();
+    startScan();
   };
 
   return (
